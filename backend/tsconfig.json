@@ -1,0 +1,77 @@
+{
+  "compilerOptions": {
+    "outDir": "build",
+    "target": "es2020",
+    "lib": [
+      "ES2020"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": false,
+    "noImplicitThis": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUnusedLocals": false,
+    "useUnknownInCatchVariables": true,
+    "allowUnreachableCode": false,
+    "alwaysStrict": true,
+    "noUnusedParameters": false,
+    "noImplicitAny": true,
+    "pretty": true,
+    "typeRoots": [
+      "src/@types",
+      "./node_modules/@types"
+    ],
+    "noEmit": false,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": false,
+    "rootDir": ".",
+    "baseUrl": "src",
+    "paths": {
+      "routes/*": [
+        "./routes/*"
+      ],
+      "controllers/*": [
+        "./controllers/*"
+      ],
+      "@middlewares/*": [
+        "./@middlewares/*"
+      ],
+      "@constants/*": [
+        "./@constants/*"
+      ],
+      "configs/*": [
+        "./configs/*"
+      ],
+      "typings/*": [
+        "./typings/*"
+      ],
+      "services/*": [
+        "./services/*"
+      ],
+      "helpers/*": [
+        "./helpers/*"
+      ],
+      "@slack_messages/*": [
+        "./@slack_messages/*"
+      ],
+      "lib/*": [
+        "./lib/*"
+      ],
+    },
+  },
+  "include": [
+    "src"
+  ],
+  "ts-node": {
+    "swc": true,
+    "transpileOnly": true
+  }
+}

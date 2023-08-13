@@ -1,0 +1,37 @@
+{
+    "printWidth": 120,
+    "tabWidth": 4,
+    "useTabs": true,
+    "semi": true,
+    "endOfLine": "auto",
+    "bracketSpacing": true,
+    "overrides": [
+		{
+			"files": ["*.css"],
+			"options": {
+				"parser": "css"
+			}
+		},
+		{
+			"files": ["*.js", "*.cjs", "*.mjs", "*.jsx"],
+			"options": {
+				"parser": "javascript"
+			}
+		},
+
+		{
+			"files": ["*.ts", "*.tsx"],
+			"options": {
+				"parser": "typescript"
+			}
+		},
+
+		{
+			"files": ["*.json", "*.jsonc", ".babelrc", ".prettierrc"],
+			"options": {
+				"parser": "json"
+			}
+		}
+	],
+    "singleQuote": false
+}

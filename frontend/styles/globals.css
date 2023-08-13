@@ -1,0 +1,21 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Acme&family=Barlow:ital,wght@0,100;1,100&family=Bricolage+Grotesque:opsz,wght@10..48,300&family=Caveat:wght@700&family=Lato:wght@400;700&family=Noto+Sans&family=Noto+Sans+JP:wght@500&family=Roboto+Mono:wght@500&family=Roboto:wght@300;400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+	font-family: "Bricolage Grotesque", sans-serif;
+}
+
+.masonry-grid {
+	display: flex;
+	width: auto !important;
+}
+
+.masonry-grid-column {
+	margin-right: 0;
+	background-clip: padding-box;
+	flex: 1;
+}

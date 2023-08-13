@@ -1,0 +1,124 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "settings": {
+    // to support @/ path
+    "import/resolver": {
+      "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
+    },
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./frontend/tsconfig.json", // tells parser relative path of tsconfig.json
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  // all plugins (eslint-plugin-xxx) go here:
+  "plugins": [
+    "@typescript-eslint",
+    "@next/eslint-plugin-next", // https://github.com/vercel/next.js/blob/canary/packages/eslint-plugin-next/lib/index.js
+    "tailwindcss",
+    "jsdoc"
+  ],
+  // all configs (eslint-config-xxx) go here:
+  "extends": [
+    "plugin:react-hooks/recommended",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking", // contains rules that specifically require type information
+    "plugin:@next/next/recommended",
+    "prettier", // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
+    "plugin:prettier/recommended", // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+    "plugin:tailwindcss/recommended",
+    "plugin:jsdoc/recommended"
+  ],
+  "rules": {
+    "react-hooks/exhaustive-deps": "error",
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-returns-type": "off",
+    "jsdoc/check-param-names": "off",
+    "jsdoc/require-jsdoc": "off",
+    "jsdoc/no-undefined-types": "off",
+    "tailwindcss/classnames-order": "off",
+    "react/prop-types": "off",
+    "no-empty-function": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+        "caughtErrors": "all"
+      }
+    ],
+    "no-unused-labels": [
+      "warn"
+    ],
+    "jsdoc/require-param": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "no-template-curly-in-string": "error",
+    "default-case": "error",
+    "eqeqeq": "error",
+    "no-unused-expressions": "error",
+    "no-unreachable": "error",
+    "array-callback-return": "error",
+    "array-bracket-spacing": "error",
+    "array-bracket-newline": "error",
+    "arrow-spacing": "error",
+    "callback-return": "error",
+    "comma-spacing": "error",
+    "no-confusing-arrow": "error",
+    "no-duplicate-imports": "error",
+    "spaced-comment": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "arrow-parens": "error",
+    "jsx-quotes": [
+      "error",
+      "prefer-double"
+    ],
+    "quotes": [
+      "error",
+      "double",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "switch-colon-spacing": [
+      "error",
+      {
+        "after": true,
+        "before": false
+      }
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "printWidth": 120,
+        "semi": true,
+        "useTabs": true,
+        "tabWidth": 4
+      }
+    ]
+  }
+}

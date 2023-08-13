@@ -1,0 +1,6 @@
+node_modules
+.next
+out
+.swc
+sitemap-generator.js
+public/mockServiceWorker.js

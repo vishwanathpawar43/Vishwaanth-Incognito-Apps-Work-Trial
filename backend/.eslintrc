@@ -1,0 +1,79 @@
+{
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"project": "./backend/tsconfig.json", // tells parser relative path of tsconfig.json
+		// "project": "tsconfig.json",
+		// "tsconfigRootDir": "__dirname",
+		"ecmaVersion": 12,
+		"sourceType": "module"
+	},
+	"plugins": ["@typescript-eslint", "prettier"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"prettier",
+		"plugin:prettier/recommended"
+	],
+	"rules": {
+		"no-empty-function": "error",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": [
+			"warn",
+			{
+				"varsIgnorePattern": "^_",
+				"argsIgnorePattern": "^_",
+				"destructuredArrayIgnorePattern": "^_",
+				"caughtErrorsIgnorePattern": "^_",
+				"caughtErrors": "all"
+			}
+		],
+		"no-unused-labels": "error",
+		"@typescript-eslint/no-unsafe-assignment": "off",
+		"@typescript-eslint/no-floating-promises": "off",
+		"no-template-curly-in-string": "error",
+		"default-case": "error",
+		"eqeqeq": "error",
+		"no-unused-expressions": "error",
+		"no-unreachable": "error",
+		"array-callback-return": "error",
+		"array-bracket-spacing": "error",
+		"array-bracket-newline": "error",
+		"arrow-spacing": "error",
+		"callback-return": "error",
+		"comma-spacing": "error",
+		"no-confusing-arrow": "error",
+		"no-duplicate-imports": "error",
+		"no-var": "error",
+		"prefer-const": "error",
+		"arrow-parens": "error",
+		"jsx-quotes": ["error", "prefer-double"],
+		"quotes": [
+			"error",
+			"double",
+			{
+				"avoidEscape": true,
+				"allowTemplateLiterals": true
+			}
+		],
+		"semi": ["error", "always"],
+		"switch-colon-spacing": [
+			"error",
+			{
+				"after": true,
+				"before": false
+			}
+		],
+		"prettier/prettier": [
+			"error",
+			{
+				"endOfLine": "auto",
+				"printWidth": 120,
+				"semi": true,
+				"useTabs": true,
+				"tabWidth": 4
+			}
+		]
+	}
+}

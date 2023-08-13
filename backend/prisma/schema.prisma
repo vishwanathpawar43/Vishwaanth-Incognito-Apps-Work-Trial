@@ -1,0 +1,558 @@
+generator client {
+  provider = "prisma-client-js"
+//   previewFeatures =["fullTextSearch", "fullTextIndex"]
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model incentives {
+  id                   Int      @id @default(autoincrement())
+  name                 String
+  team_id              String
+  claps_given          Int?     @default(0)
+  rewards_balance      Int?     @default(0)
+  good_vibes           Boolean?
+  enabled              Boolean?
+  free_rewards_claimed Boolean?
+  claps_given_monthly  Int?     @default(0)
+}
+
+model messages_to_bot {
+  id        Int      @id @default(autoincrement())
+  team_id   String
+  user_id   String
+  message   String
+  timestamp DateTime @db.Timestamp(6)
+}
+
+model nudges {
+  id             Int       @id @default(autoincrement())
+  team_id        String
+  channel_id     String?
+  pop_up         String?
+  scheduled_utc  DateTime  @db.Timestamp(6)
+  date_published DateTime? @db.Timestamp(6)
+  blocks         Json?     @db.Json
+  type           String
+  slack_ts       String?
+  pulse_id       Int?
+}
+
+model over_limit_messages {
+  id        Int    @id @default(autoincrement())
+  team_id   String
+  channel   String
+  timestamp String
+}
+
+model posts {
+  id                    Int          @id @default(autoincrement())
+  post                  String
+  date_posted           DateTime     @db.Timestamp(6)
+  author_id             String
+  author_alias          String
+  team_id               String
+  score                 Int          @default(0) @db.SmallInt
+  users_that_upvoted    String[]     @default([])
+  users_that_downvoted  String[]     @default([])
+  slack_ts              String?
+  replies               String[]     @default([])
+  ids_that_upvoted      String[]     @default([])
+  ids_that_downvoted    String[]     @default([])
+  channel_id            String
+  channel_name          String
+  reply_ids             String[]     @default([])
+  tags                  String[]     @default([])
+  reply_authors         String[]     @default([])
+  moderation_approved   Boolean?
+  moderation_buttons_ts String?
+  reply_approved        Boolean?
+  anonymous             Boolean
+  valuable              Boolean?
+  new_format            Boolean?     @default(true)
+  review_passed         Boolean?
+  public_replies        String[]     @default([])
+  public_reply_ids      String[]     @default([])
+  public_reply_authors  String[]     @default([])
+  private               Boolean?
+  claps                 Int?         @db.SmallInt
+  reply_suggestion      String?
+  forward_receivers     String[]     @default([])
+  forward_channel       String?
+  forward_ts            String?
+  forward_sender        String?
+  claps_display         String?
+  employee_voice        String?
+  feedback_themes       String[]     @default([])
+  email                 String?
+  thread_id             String?      @unique
+  user_group_id         Int?
+  user_groups           user_groups? @relation(fields: [user_group_id], references: [id])
+}
+
+enum AnsweredFrom {
+  slack
+  web
+}
+
+enum AnswerStatus {
+  draft
+  submitted
+}
+
+model pulse_answers {
+  id                Int                @id @default(autoincrement())
+  pulse_id          Int
+  pulse             pulses             @relation(fields: [pulse_id], references: [id])
+  answer            String?
+  context           String?
+  replies           String[]           @default([])
+  responder_id      String?
+  date_answered     DateTime?          @db.Timestamp(6)
+  slack_ts          String?
+  reply_authors     String[]           @default([])
+  team_id           String
+  responder_alias   String
+  admin_reply       Boolean            @default(false)
+  passed            Boolean            @default(false)
+  multi_pulses_id   Int?
+  multi_pulses_info multi_pulses_info? @relation(fields: [multi_pulses_id], references: [id])
+  sentiment         String?
+  reply_hash        String?
+  responder_email   String?
+  answered_from     AnsweredFrom?
+  user_group_id     Int?
+  user_groups       user_groups?       @relation(fields: [user_group_id], references: [id])
+  status            AnswerStatus       @default(draft)
+  multi_answers     String[]           @default([])
+  theme_uuid        String?
+}
+
+model pulses {
+  id                      Int                @id @default(autoincrement())
+  author                  String
+  team_id                 String
+  question                String?
+  date_published          DateTime?          @db.Timestamp(6)
+  status                  String
+  answer_format           String[]           @default([])
+  slack_ts                String?
+  author_username         String
+  result_channel          String?
+  audience                String[]           @default([])
+  audience_channels       String[]           @default([])
+  reminder_sent           Boolean?
+  reminder_message        String?
+  reminder_timestamp      DateTime?          @db.Timestamp(6)
+  audience_selected_users String[]           @default([])
+  audience_excluded_users String[]           @default([])
+  scheduled               Boolean?
+  recurring               Boolean?
+  scheduled_date          String?
+  scheduled_time          String?
+  recurring_setting       String?
+  scheduled_utc           DateTime?          @db.Timestamp(6)
+  google_sheet_id         String?
+  update_google_sheet     Boolean?
+  audience_user_groups    String[]           @default([])
+  anonymous               Boolean            @default(true)
+  mandatory               Boolean            @default(false)
+  multi_pulses_id         Int?
+  ai_summary              String?
+  multi_pulses_info       multi_pulses_info? @relation(fields: [multi_pulses_id], references: [id])
+  pulse_answers           pulse_answers[]
+  feedback_fridays        feedback_fridays[]
+  send_announcement       Boolean            @default(false)
+  gif                     String?
+  announcement_channel    String?
+  reply_hash              String?
+  total_estimated_users   Int?
+  announcement_ts         String?
+  multiple_answers        Boolean            @default(false)
+  type                    String             @default("general")
+  deleted                 Boolean            @default(false)
+  created_at              DateTime?          @default(now())
+  updated_at              DateTime?          @updatedAt
+  archived                Boolean            @default(false)
+  uid                     String
+  title                   String?
+  description             String?
+  with_context            Boolean            @default(true)
+  required                Boolean            @default(true)
+  context_message         String?
+  ai_themes               Json               @default("[]")
+}
+
+enum MultiPulsesResultLocationType {
+  channel
+  onlyme
+}
+
+enum PulseStatus {
+  scheduled
+  live
+  draft
+  closed
+  recalled
+}
+
+model multi_pulses_info {
+  id                    Int                           @id @default(autoincrement())
+  team_id               String
+  tenant_id             Int?
+  tenant                tenants?                      @relation(fields: [tenant_id], references: [id])
+  title                 String
+  description           String?
+  category              String?
+  creator_id            Int
+  creator               users                         @relation(fields: [creator_id], references: [id])
+  anonymous             Boolean
+  mandatory             Boolean
+  result_location_type  MultiPulsesResultLocationType
+  result_location       String
+  scheduled             Boolean
+  recurring             Boolean
+  pulses                pulses[]
+  creator_slack_id      String
+  audience              String[]
+  date_published        DateTime?                     @db.Timestamp(6)
+  status                PulseStatus
+  slack_ts              String?
+  creator_name          String
+  audience_channels     String[]
+  audience_users        String[]
+  scheduled_date        String?
+  scheduled_time        String?
+  recurring_setting     String                        @default("No recurrence")
+  scheduled_utc         DateTime?                     @db.Timestamp(6)
+  audience_user_groups  String[]
+  pulse_answers         pulse_answers[]
+  reminder_sent         Boolean                       @default(false)
+  reminder_message      String?
+  reminder_timestamp    DateTime?                     @db.Timestamp(6)
+  send_announcement     Boolean                       @default(false)
+  gif                   String?
+  announcement_channel  String?
+  reply_hash            String?
+  total_estimated_users Int?
+  announcement_ts       String?
+  type                  String                        @default("general")
+  extra_info            Json                          @default("{}")
+  deleted               Boolean                       @default(false)
+  created_at            DateTime?                     @default(now())
+  updated_at            DateTime?                     @updatedAt
+  archived              Boolean                       @default(false)
+  uid                   String                        @unique
+}
+
+enum RecognitionApproved {
+  pending
+  true
+  false
+}
+
+model recognitions {
+  id             Int                  @id @default(autoincrement())
+  team_id        String
+  team_name      String
+  giver_id       String
+  receiver_id    String[]             @default([]) 
+  message        String
+  value          String?
+  claps          Int
+  img            String?
+  channel_id     String?
+  slack_ts       String?
+  public         Boolean
+  date_posted    DateTime?            @db.Timestamp(6)
+  total_claps    Int
+  anonymous      Boolean
+  giver_alias    String
+  approved       RecognitionApproved?
+  ai_answer      String?
+  moderator_id   String?
+  receiver_names String[]             @default([]) 
+//   @@fulltext(receiver_names)
+  claps_display  String?
+  user_group_id  Int?
+  user_groups    user_groups?         @relation(fields: [user_group_id], references: [id])
+}
+
+model redeemed_rewards {
+  id             Int       @id @default(autoincrement())
+  team_id        String
+  team_name      String
+  user_id        Int
+  user           users?    @relation(name: "creator", fields: [user_id], references: [id])
+  reward_id      Int
+  reward         rewards?  @relation(fields: [reward_id], references: [id])
+  fulfilled      Boolean
+  date_redeemed  DateTime  @db.Timestamp(6)
+  claps          Int
+  fulfiller      users?    @relation(name: "fulfiller", fields: [fulfiller_id], references: [id])
+  fulfiller_id   Int?
+  date_fulfilled DateTime? @db.Timestamp(6)
+  message_ts     String?
+}
+
+model rewards {
+  id               Int                @id @default(autoincrement())
+  team_id          String
+  team_name        String
+  reward_name      String
+  reward_value     Int
+  num_rewarded     Int                @default(0)
+  enabled          Boolean
+  users_redeemed   String[]           @default([])
+  img              String?
+  description      String?
+  quantity         Int                @default(0)
+  redeemed_rewards redeemed_rewards[]
+}
+
+enum Plan {
+  trial
+  free
+  standard
+  gift
+  premium
+  appsumo
+}
+
+model tenants {
+  id                           Int                 @id @default(autoincrement())
+  name                         String
+  team_id                      String              @unique
+  start_date                   DateTime            @db.Timestamp(6)
+  plan                         Plan                @default(trial)
+  // active                       Boolean?
+  installation                 Json
+  feedback_id                  String?
+  installer_id                 String
+  installer_name               String?
+  installer_email              String?
+  num_users                    Int?
+  public_channel_id            String?
+  public_channel_name          String?
+  enterprise_id                String?
+  private_channel_name         String?
+  admin_ids                    String[]            @default([])
+  engagement_survey_sent       Boolean?
+  engagement_survey_results    String[]            @default([])
+  bot_introd                   DateTime?           @db.Timestamp(6)
+  msg_scheduled                DateTime?           @db.Timestamp(6)
+  message_tags                 String[]            @default([])
+  whitelist_channels           String[]            @default([])
+  whitelist_users              String[]            @default([])
+  user_nudges_approval         Boolean?            @default(false)
+  feedback_google_sheet_id     String?
+  update_feedback_google_sheet Boolean?
+  alias_refresh_nudge          DateTime?           @db.Timestamp(6)
+  stripe_id                    String?
+  stripe_invoice_id            String?
+  send_receipt                 Boolean?
+  public_channel_moderation    Boolean?
+  timezone                     String?
+  timezone_offset              String?
+  feedback_friday_message      String?
+  feedback_friday_frequency    String?
+  feedback_friday_day          String?
+  feedback_friday_timestamp    DateTime?           @db.Timestamp(6)
+  lead_source                  String?
+  send_alias_refresh           Boolean?
+  send_feedback_review         Boolean?
+  feedback_review_timestamp    DateTime?           @db.Timestamp(6)
+  max_users                    Int?
+  recognition_enabled          Boolean             @default(false)
+  rewards_enabled              Boolean             @default(false)
+  feedback_claps_enabled       Boolean             @default(false)
+  claps_given                  Int                 @default(0)
+  recognition_channel          String?
+  recognition_values           String[]            @default([])
+  admin_intro_videos           String[]            @default([])
+  last_user_nudge              DateTime?
+  onboarding_pages             String?
+  onboarding_use_cases         String[]
+  onboarding_call_booked       DateTime?
+  multi_pulse_info             multi_pulses_info[]
+  recognition_points_display   String[]
+  recognition_points_values    Int[]
+  recognition_points_limit     Int?
+  last_whitelist_alert         DateTime?
+  whitelist                    String[]
+  suggestion_box_hash          String?             @unique
+  last_recommendation          DateTime?
+  last_recommendation_response String?
+  manager_ids                  String[]
+}
+
+model uninstalls {
+  name            String?
+  team_id         String?
+  start_date      DateTime? @db.Timestamp(6)
+  plan            String?
+  active          Boolean?
+  first_pay       DateTime? @db.Timestamp(6)
+  recent_pay      DateTime? @db.Timestamp(6)
+  installation    Json?     @db.Json
+  feedback_id     String?
+  installer_id    String?
+  installer_name  String?
+  installer_email String?
+  num_users       Int?
+  end_date        DateTime? @db.Timestamp(6)
+  id              Int       @id @default(autoincrement())
+}
+
+model user_groups {
+  id                      Int             @id @default(autoincrement())
+  team_id                 String
+  group_name              String
+  audience                String[]        @default([])
+  feedback_channel        String?
+  updated_timestamp       DateTime?       @db.Timestamp(6)
+  description             String?
+  disabled                Boolean         @default(false)
+  deleted                 Boolean         @default(false)
+  manager_ids             String[]        @default([])
+  created_at              DateTime        @default(now()) @db.Timestamp(6)
+  recognition_channel     String?
+  recognition_hash        String
+  feedback_hash           String
+  creator_slack_id        String
+  audience_users          String[]        @default([])
+  audience_channels       String[]        @default([])
+  feedback_description    String?
+  posts                   posts[]
+  feedback_name           String?
+  recognition_name        String?
+  is_default              Boolean         @default(false)
+  public_feedback_channel String?
+  recognitions            recognitions[]
+  pulse_answers           pulse_answers[]
+  public_moderation       Boolean         @default(true)
+}
+
+model users {
+  id                          Int                 @id @default(autoincrement())
+  name                        String?
+  private_alias               String
+  slack_id                    String
+  team_id                     String
+  app_home_visits             Int                 @default(0) @db.SmallInt
+  app_home_visit_ts           DateTime?           @db.Timestamp(6)
+  first_feedback_date         DateTime?           @db.Timestamp(6)
+  public_alias                String?
+  enterprise_id               String?
+  viewed_onboarding           Boolean?
+  home_tab                    String?
+  pulse_tab                   String?
+  pulse_gif                   Boolean             @default(false)
+  intro_msg_ts                String?
+  intro_pulses_ts             String?
+  intro_onboarding_ts         String?
+  anytime_tab                 String?
+  onboarding_clicked          Boolean?
+  claps_available             Int                 @default(0)
+  claps_redeemed              Int                 @default(0)
+  anytime_video_sent          Boolean             @default(false)
+  public_video_sent           Boolean             @default(false)
+  pulse_video_sent            Boolean             @default(false)
+  onboarding_promo_sent       Boolean?
+  g2_timestamp                DateTime?           @db.Timestamp(6)
+  rewards_redeemed            String[]            @default([])
+  redeemed_rewards_creators   redeemed_rewards[]  @relation(name: "creator")
+  redeemed_rewards_fulfillers redeemed_rewards[]  @relation(name: "fulfiller")
+  claps_given                 Int                 @default(0)
+  timezone                    String?
+  timezone_offset             String?
+  last_web_access             DateTime?           @db.Timestamp(6)
+  multi_pulses_info           multi_pulses_info[]
+  dm_id                       String?
+}
+
+model feedback_fridays {
+  id       Int    @id @default(autoincrement())
+  team_id  String
+  date     String
+  pulse_id Int
+  pulse    pulses @relation(fields: [pulse_id], references: [id])
+  message  String
+  prompt   String
+}
+
+model ai_reports {
+  id           Int      @id @default(autoincrement())
+  team_id      String
+  date_created DateTime @db.Timestamp(6)
+  month        String
+  feedback     Json     @default("[]")
+  pulses       Int[]
+  recognitions Json     @default("[]")
+}
+
+model feedback_friday_settings {
+  id                        Int       @id @default(autoincrement())
+  team_id                   String
+  frequency                 String    @default("Never")
+  feedback_day              String
+  message                   String
+  nps_enabled               Boolean   @default(true)
+  feedback_enabled          Boolean   @default(true)
+  recognition_enabled       Boolean   @default(true)
+  nps_question              String
+  nps_answer_format         String[]
+  feedback_prompt           String
+  recognition_prompt        String
+  feedback_friday_timestamp DateTime?
+  notice_timestamp          DateTime?
+  next_notice_date          DateTime?
+  announcement_enabled      Boolean   @default(false)
+  feedback_time             String    @default("11:00")
+  feedback_utc              DateTime
+  announcement_channel      String?
+}
+
+model glassdoor_report {
+  id                            Int     @id @default(autoincrement())
+  uuid                          String  @unique
+  team_id                       String?
+  team_name                     String
+  pros                          Json    @default("[]")
+  cons                          Json    @default("[]")
+  advice                        Json    @default("[]")
+  overallRating                 Float
+  recommendToFriendRating       Float
+  ceoRating                     Float
+  logo                          String
+  cultureandvaluesrating        Float
+  diversityandinclusionrating   Float
+  careeropportunitiesrating     Float
+  worklifebalancerating         Float
+  seniormanagementrating        Float
+  compensationandbenefitsrating Float
+  businessoutlookrating         Float
+  ceoratingscount               Float
+}
+
+enum glassdoor_review_type {
+  pros
+  cons
+  advice
+}
+
+model glassdoor_reviews {
+  id            Int                   @id @default(autoincrement())
+  team_id       String
+  date_posted   DateTime
+  type          glassdoor_review_type
+  text          String
+  tags          String[]              @default([])
+  glassdoor_id  Int
+  report_themes String[]              @default([])
+  text_snippets Json                  @default("[]")
+}
