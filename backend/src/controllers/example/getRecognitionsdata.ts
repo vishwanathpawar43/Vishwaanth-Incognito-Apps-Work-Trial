@@ -51,7 +51,6 @@ export const getRecognitions: Controller<RequestParams, ResponseData, RequestBod
 				{ message: { contains: search, mode: "insensitive" } },
 				{ value: { contains: search, mode: "insensitive" } },
 				{ receiver_names: { has: search } },
-				// { receiver_names: { some: { contains: search.toLowerCase(), mode: "insensitive" } } },
 			];
 		}
 

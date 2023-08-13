@@ -1,9 +1,9 @@
 import React from "react";
 import { Paper, Container, MantineProvider } from "@mantine/core";
 
-interface HeaderProps {
+type HeaderProps = {
 	companyName: string;
-}
+};
 
 const Header: React.FC<HeaderProps> = ({ companyName }) => {
 	return (

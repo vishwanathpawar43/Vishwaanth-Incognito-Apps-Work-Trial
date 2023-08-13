@@ -9,7 +9,7 @@ const nextConfig = {
   },
   env: {},
   images: {
-    domains: []
+    domains: ['res.cloudinary.com'],
   }
 }
 

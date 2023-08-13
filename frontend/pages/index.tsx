@@ -121,7 +121,6 @@ const Home: NextPage = () => {
 			<section className="flex flex-col gap-4 md:flex-row">
 				{/* Filter section */}
 				<div className="mx-2 my-0 w-full border border-gray-300 p-4 shadow-lg md:min-h-screen md:w-64">
-					{/* ... (your filter components) */}
 					<h2 className="mb-6 border-b border-gray-300 pb-2 text-xl font-bold tracking-wide">Filters</h2>
 					<SearchComponent onSearch={handleSearch} />
 					<Filter onFilterDate={handleFilterDate} onFilterValues={handleFilterValues} />
@@ -166,49 +165,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-{
-	/* <Fragment>
-			<Header companyName="Wall of Recognitions" />
-			<section className="flex gap-4">
-				<div className="mx-2 my-0 min-h-screen w-1/5 border border-gray-300 p-4 shadow-lg">
-					<h2 className="mb-6 border-b border-gray-300 pb-2 text-xl font-semibold">Filters</h2>
-					<SearchComponent onSearch={handleSearch} />
-					<Filter onFilterDate={handleFilterDate} onFilterValues={handleFilterValues} />
-				</div>
-
-				<div className="flex-1" style={{ backgroundColor: "#ededed" }}>
-					{content ? (
-						<div>
-							<Masonry
-								breakpointCols={{ default: 3, 1100: 2, 700: 1 }}
-								className="masonry-grid"
-								columnClassName="masonry-grid-column"
-							>
-								{content}
-							</Masonry>
-							<div className="mb-12 flex items-center justify-center">
-								{isFetchingNextPage && <Loader size="xl" />}
-							</div>
-						</div>
-					) : (
-						<div className="flex items-center justify-center pt-60">
-							<Loader size="xl" />
-						</div>
-					)}
-					{content && content.length === 0 && (
-						<div
-							className="flex items-center justify-center pt-60"
-							style={{
-								fontFamily: "'Acme', sans-serif",
-								fontWeight: "bold",
-								fontSize: "1rem",
-							}}
-						>
-							<h1>No Recognitions Found</h1>
-						</div>
-					)}
-				</div>
-			</section>
-		</Fragment> */
-}
