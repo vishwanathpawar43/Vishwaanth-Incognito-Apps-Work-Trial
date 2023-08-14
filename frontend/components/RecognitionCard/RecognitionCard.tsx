@@ -19,7 +19,6 @@ const getEmoji = (value: string) => {
 		const res = words.map((word) => {
 			return emoji.get(word);
 		});
-		console.log(res);
 		return res.find((str) => str !== undefined);
 	}
 	return undefined;

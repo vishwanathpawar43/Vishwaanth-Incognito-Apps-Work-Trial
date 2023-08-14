@@ -79,6 +79,9 @@ const Home: NextPage = () => {
 		({ pageParam = 1 }) => fetchRecognitions(Number(pageParam), searchText, filterRange, filterValues),
 		{
 			getNextPageParam: (lastPage, allPages) => {
+				// console.log("--------------here--------------------");
+				// console.log(lastPage);
+				// console.log(allPages);
 				const nextPage = lastPage.rows.length === LIMIT ? allPages.length + 1 : undefined;
 				return nextPage;
 			},
@@ -102,7 +105,7 @@ const Home: NextPage = () => {
 
 	useEffect(() => {
 		if (infiniteData && infiniteData.pages[0]) {
-			const allResults: Result[] = infiniteData.pages[0].rows.flat();
+			const allResults: Result[] = infiniteData.pages.flatMap((page) => page.rows);
 			const values: string[] = infiniteData.pages[0].companyValues.filter((value) => value !== "");
 			setFilteredData(allResults);
 			setCompanyValues(values);
