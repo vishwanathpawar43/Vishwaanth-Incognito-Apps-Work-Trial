@@ -27,6 +27,7 @@ type Result = {
 
 type ResponseData = {
 	rows: Result[];
+	companyValues: string[];
 	pagination: {
 		totalPages: number;
 		currentPage: number;
@@ -89,11 +90,25 @@ export const getRecognitions: Controller<RequestParams, ResponseData, RequestBod
 
 		const totalPages = Math.ceil(totalCount / pageSize);
 
+		// fetch values
+		const response = await prisma.recognitions.findMany({
+			where: {
+				team_id: tenant,
+			},
+			select: {
+				value: true,
+			},
+			distinct: ["value"],
+		});
+
+		const companyValues: string[] = response.map((recognition) => recognition.value || "");
+
 		res.status(200).json({
 			success: true,
 			code: 200,
 			data: {
 				rows: results,
+				companyValues: companyValues,
 				pagination: {
 					totalPages,
 					currentPage,

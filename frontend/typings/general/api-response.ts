@@ -12,7 +12,7 @@ export type Result = {
 
 export type DataType = {
 	rows: Result[];
-
+	companyValues: string[];
 	pagination: {
 		totalPages: number;
 		currentPage: number;

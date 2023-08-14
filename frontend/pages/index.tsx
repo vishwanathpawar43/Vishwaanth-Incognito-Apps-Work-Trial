@@ -20,13 +20,14 @@ const Home: NextPage = () => {
 	const [searchText, setSearchText] = useState("");
 	const [filterRange, setFilterRange] = useState<DateValueType>(null);
 	const [filterValues, setFilterValues] = useState<string[]>([]);
+	const [companyValues, setCompanyValues] = useState<string[]>([]);
 
 	const fetchRecognitions = async (
 		page: number,
 		searchText: string,
 		filterRange: DateValueType,
 		filterValues: string[],
-	): Promise<Result[]> => {
+	): Promise<DataType> => {
 		const startDate = filterRange && filterRange.startDate ? new Date(filterRange.startDate) : null;
 
 		if (startDate) {
@@ -50,10 +51,16 @@ const Home: NextPage = () => {
 			const responseData: APIResponse<DataType> = await res.json();
 
 			if (responseData.success && responseData.data) {
-				const rows: Result[] = responseData.data.rows;
-				return rows;
+				return responseData.data;
 			} else {
-				return [];
+				return {
+					rows: [],
+					companyValues: [],
+					pagination: {
+						totalPages: 0,
+						currentPage: 0,
+					},
+				};
 			}
 		} catch (error) {
 			console.log("Error while fetching data from backend - ", error);
@@ -72,7 +79,7 @@ const Home: NextPage = () => {
 		({ pageParam = 1 }) => fetchRecognitions(Number(pageParam), searchText, filterRange, filterValues),
 		{
 			getNextPageParam: (lastPage, allPages) => {
-				const nextPage = lastPage.length === LIMIT ? allPages.length + 1 : undefined;
+				const nextPage = lastPage.rows.length === LIMIT ? allPages.length + 1 : undefined;
 				return nextPage;
 			},
 		},
@@ -94,9 +101,11 @@ const Home: NextPage = () => {
 	};
 
 	useEffect(() => {
-		if (infiniteData) {
-			const allResults: Result[] = infiniteData.pages.flat();
+		if (infiniteData && infiniteData.pages[0]) {
+			const allResults: Result[] = infiniteData.pages[0].rows.flat();
+			const values: string[] = infiniteData.pages[0].companyValues.filter((value) => value !== "");
 			setFilteredData(allResults);
+			setCompanyValues(values);
 		}
 	}, [infiniteData]);
 
@@ -104,9 +113,9 @@ const Home: NextPage = () => {
 		isSuccess &&
 		filteredData.map((item, i) => {
 			if (i === filteredData.length - 1) {
-				return <RecognitionCard ref={ref} key={item.id} recognition={item} />;
+				return <RecognitionCard ref={ref} key={item.id} recognition={item} companyValues={companyValues} />;
 			}
-			return <RecognitionCard key={item.id} recognition={item} />;
+			return <RecognitionCard key={item.id} recognition={item} companyValues={companyValues} />;
 		});
 
 	useEffect(() => {
@@ -123,7 +132,11 @@ const Home: NextPage = () => {
 				<div className="mx-2 my-0 w-full border border-gray-300 p-4 shadow-lg md:min-h-screen md:w-64">
 					<h2 className="mb-6 border-b border-gray-300 pb-2 text-xl font-bold tracking-wide">Filters</h2>
 					<SearchComponent onSearch={handleSearch} />
-					<Filter onFilterDate={handleFilterDate} onFilterValues={handleFilterValues} />
+					<Filter
+						onFilterDate={handleFilterDate}
+						onFilterValues={handleFilterValues}
+						companyValues={companyValues}
+					/>
 				</div>
 
 				{/* Content section */}

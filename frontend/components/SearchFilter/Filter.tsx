@@ -1,27 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Button, Group, Paper, Checkbox } from "@mantine/core";
-// import { DatePicker } from "@mantine/dates";
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
+import * as emoji from "node-emoji";
 
 type FilterProps = {
 	onFilterDate: (range: DateValueType) => void;
 	onFilterValues: (values: string[]) => void;
+	companyValues: string[];
 };
 
-// const yourCompanyValuesOptions = ["Empathy", "Craftsmanship", "Courtesy", "Playfulness", "Solidarity", "Thriving"];
-
-const yourCompanyValuesOptions = [
-	":heart: Empathy",
-	":hammer: Craftsmanship",
-	":woman-tipping-hand: Courtesy",
-	":man-gesturing-ok: Playfulness",
-	":raised_hands: Solidarity",
-	":sunflower: Thriving",
-];
-
-const emoji = ["&#128159;", "&#128296;", "&#128129;", "&#128582;", "&#9995;", "&#127803;"];
-
-const Filter: React.FC<FilterProps> = ({ onFilterDate, onFilterValues }) => {
+const Filter: React.FC<FilterProps> = ({ onFilterDate, onFilterValues, companyValues }) => {
 	const [value, setValue] = useState<DateValueType>(null);
 
 	const [selectedValues, setSelectedValues] = useState<string[]>([]);
@@ -42,6 +30,21 @@ const Filter: React.FC<FilterProps> = ({ onFilterDate, onFilterValues }) => {
 	useEffect(() => {
 		onFilterValues(selectedValues);
 	}, [selectedValues, onFilterValues]);
+
+	const getEmoji = (value: string) => {
+		const start = value.indexOf(":") + 1;
+		const end = value.lastIndexOf(":");
+
+		if (start !== -1 && end !== -1 && start < end) {
+			const extractedText = value.substring(start, end);
+			const words = extractedText.split("-");
+			const res = words.map((word) => {
+				return emoji.get(word);
+			});
+			return res.find((str) => str !== undefined);
+		}
+		return undefined;
+	};
 
 	return (
 		<Paper className="flex w-full">
@@ -66,16 +69,12 @@ const Filter: React.FC<FilterProps> = ({ onFilterDate, onFilterValues }) => {
 
 			<div className="mb-4  w-full flex-col space-x-4">
 				<Checkbox.Group value={selectedValues} onChange={(values) => setSelectedValues(values)}>
-					{yourCompanyValuesOptions.map((value, i) => {
-						const code = emoji[i] ? emoji[i] : "&#128522;";
+					{companyValues.map((value) => {
+						const emo = getEmoji(value);
 						return (
 							<div key={value} className="flex items-center">
 								<Checkbox value={value} label={getCompanyValue(value)} className="mr-2" />
-								<span
-									dangerouslySetInnerHTML={{ __html: String(code) }}
-									style={{ fontSize: "1.5rem" }}
-									className="ml-2"
-								/>
+								<span className="ml-2 text-2xl">{emo ? emo : "☀️"}</span>
 							</div>
 						);
 					})}

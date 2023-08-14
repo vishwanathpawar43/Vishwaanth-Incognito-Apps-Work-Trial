@@ -2,21 +2,28 @@ import React, { forwardRef } from "react";
 import { Paper } from "@mantine/core";
 import { Result } from "typings/general";
 import Image from "next/image";
+import * as emoji from "node-emoji";
 
 type RecognitionCardProps = {
 	recognition: Result;
+	companyValues: string[];
 };
 
-const yourCompanyValuesOptions = [
-	":heart: Empathy",
-	":hammer: Craftsmanship",
-	":woman-tipping-hand: Courtesy",
-	":man-gesturing-ok: Playfulness",
-	":raised_hands: Solidarity",
-	":sunflower: Thriving",
-];
+const getEmoji = (value: string) => {
+	const start = value.indexOf(":") + 1;
+	const end = value.lastIndexOf(":");
 
-const emoji = ["&#128159;", "&#128296;", "&#128129;", "&#128582;", "&#9995;", "&#127803;", "&#128522;"];
+	if (start !== -1 && end !== -1 && start < end) {
+		const extractedText = value.substring(start, end);
+		const words = extractedText.split("-");
+		const res = words.map((word) => {
+			return emoji.get(word);
+		});
+		console.log(res);
+		return res.find((str) => str !== undefined);
+	}
+	return undefined;
+};
 
 const RecognitionCard: React.ForwardRefRenderFunction<HTMLDivElement, RecognitionCardProps> = (
 	{ recognition },
@@ -26,9 +33,7 @@ const RecognitionCard: React.ForwardRefRenderFunction<HTMLDivElement, Recognitio
 
 	const formattedReceiverNames = receiver_names.join(", ");
 
-	const index = yourCompanyValuesOptions.findIndex((companyValue) => {
-		return companyValue === value;
-	});
+	const emo = getEmoji(value ? value : "");
 
 	const recognitionContent = (
 		<div className="flex flex-col gap-3 rounded-lg font-semibold text-[#98afc7]">
@@ -40,10 +45,7 @@ const RecognitionCard: React.ForwardRefRenderFunction<HTMLDivElement, Recognitio
 			<div className="flex flex-col gap-2">
 				<div className="flex items-center justify-between">
 					<h2 className="text-base">Hii there,</h2>
-					<span
-						dangerouslySetInnerHTML={{ __html: String(index === -1 ? emoji.slice(-1) : emoji[index]) }}
-						className="ml-2 text-2xl"
-					/>
+					<span className="ml-2 text-2xl">{emo ? emo : "☀️"}</span>
 				</div>
 				<div className="text-base text-[#7e7d9c]">@ {formattedReceiverNames}</div>
 				<div className="my-6">
